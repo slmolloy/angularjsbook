@@ -1,0 +1,174 @@
+<html>
+
+<body ng-app="myApp">
+
+<head>
+    <style>
+        .menu-disabled-true {
+            color: red;
+        }
+
+        .menu-disabled-false {
+            color: inherit;
+        }
+
+        .error {
+            background-color: red;
+        }
+
+        .warning {
+            background-color: yellow;
+        }
+    </style>
+
+</head>
+
+<script src="angular.js"></script>
+
+<div ng-controller="HeaderController">
+    <div ng-class="{error: isError, warning: isWarning}">{{messageText}}</div>
+    <button ng-click="showError()">Show Error</button>
+    <button ng-click="showWarning()">Show Warning</button>
+    <button ng-click="hideMessages()">Hide Messages</button>
+</div>
+
+<div ng-controller="MenuController">
+    <button ng-click="toggleMenu()">Toggle Menu</button>
+    <button ng-click="toggleContact()">Toggle Contact</button>
+    <ul ng-show="menustate.show">
+        <li ng-click="home()">Home</li>
+        <li ng-click="about()">About</li>
+        <li ng-click="contact()" class="menu-disabled-{{menustate.contact}}">Contact</li>
+    </ul>
+</div>
+
+<form ng-controller="StartupController">
+    Starting: <input ng-model="funding.starting">
+    Recomendation: {{funding.needed}}
+    <button ng-click="requestFunding()">Fund my biz</button>
+    <button ng-click="reset()">Reset</button>
+</form>
+
+<div ng-controller="StudentController">
+    <ul>
+        <li ng-repeat="student in students">
+            <a ng-href="/student/view/{{student.id}}">{{student.name}}</a>
+        </li>
+    </ul>
+    Name: <input ng-model="newName">
+    <button ng-click="insert()">Insert</button>
+</div>
+
+<div>
+    {{12.90 | number:0 | currency}}
+</div>
+<div ng-controller="TextController">
+    <div>
+        {{specialText}}
+    </div>
+    <div>
+        {{specialText | titleCase}}
+    </div>
+    <div>
+        {{specialText | titleInverseCase}}
+    </div>
+</div>
+
+<script>
+    var myAppModule = angular.module('myApp', []);
+
+    myAppModule.controller('StartupController', function($scope) {
+        $scope.funding = { starting: 0 };
+
+        var computeNeeded = function() {
+            $scope.funding.needed = $scope.funding.starting * 10;
+        };
+
+        $scope.$watch('funding.starting', computeNeeded);
+
+        $scope.requestFunding = function() {
+            window.alert("Get more customers.")
+        };
+
+        $scope.reset = function() {
+            $scope.funding.starting = 0;
+        };
+    });
+
+    var students = [{name: 'Scott', id: 1},
+        {name: 'Sean', id: 2},
+        {name: 'Tim', id: 3}];
+
+    myAppModule.controller('StudentController', function($scope) {
+        $scope.students = students;
+
+        $scope.insert = function() {
+            $scope.students.splice(0, 0, {name: $scope.newName, id:'4'});
+        };
+    });
+
+    myAppModule.controller('MenuController', function($scope) {
+        $scope.menustate = { show: true, contact: true};
+
+        $scope.toggleMenu = function() {
+            $scope.menustate.show = !$scope.menustate.show;
+        };
+
+        $scope.toggleContact = function() {
+            $scope.menustate.contact = !$scope.menustate.contact;
+        }
+    });
+
+    myAppModule.controller('HeaderController', function($scope) {
+        $scope.isError = false;
+        $scope.isWarning = false;
+
+        $scope.showError = function() {
+            $scope.messageText = 'Error message';
+            $scope.isError = true;
+            $scope.isWarning = false;
+        }
+
+        $scope.showWarning = function() {
+            $scope.messageText = 'Warning message';
+            $scope.isError = false;
+            $scope.isWarning = true;
+        };
+
+        $scope.hideMessages = function() {
+            $scope.messageText = '';
+            $scope.isError = false;
+            $scope.isWarning = false;
+        }
+    });
+
+    myAppModule.controller('TextController', function($scope) {
+        $scope.specialText = 'hello my sweet lestarya';
+    })
+
+    myAppModule.filter('titleCase', function() {
+        var titleCaseFilter = function(input) {
+            var words = input.split(' ');
+            for (var i = 0; i < words.length; i++) {
+                words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+            }
+            return words.join(' ');
+        };
+        return titleCaseFilter;
+    });
+
+    myAppModule.filter('titleInverseCase', function() {
+        var titleInverseCaseFilter = function(input) {
+            var words = input.split(' ');
+            for (var i = 0; i < words.length; i++) {
+                words[i] = words[i].charAt(0).toLowerCase() + words[i].slice(1).toUpperCase();
+            }
+            return words.join(' ');
+        };
+        return titleInverseCaseFilter;
+    });
+</script>
+
+</body>
+
+</html>
