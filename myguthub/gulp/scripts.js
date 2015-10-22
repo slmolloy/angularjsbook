@@ -15,7 +15,8 @@ gulp.task('js', function() {
 
   gulp.src(['bower_components/angular/angular.js',
     'bower_components/angular-route/angular-route.js',
-    'bower_components/angular-resource/angular-resource.js'])
+    'bower_components/angular-resource/angular-resource.js',
+    'bower_components/angular-mocks/angular-mocks.js'])
     .pipe(gulp.dest('assets'));
 });
 
