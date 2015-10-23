@@ -60,4 +60,32 @@ describe('Controllers', function() {
       expect(recipes).toEqualData([{id: 1}, {id: 2}]);
     });
   });
+
+  describe('ViewCtrl', function() {
+    var mockBackend, recipe, location;
+
+    beforeEach(inject(function($rootScope, $controller, _$httpBackend_, Recipe, $location) {
+      recipe = Recipe;
+      mockBackend = _$httpBackend_;
+      location = $location;
+      $scope = $rootScope.$new();
+      ctrl = $controller('ViewCtrl', {
+        $scope: $scope,
+        $location: $location,
+        recipe: {id: 1, title: "Cookies"}
+      });
+    }));
+
+    it('should load a recipe', function() {
+      expect($scope.recipe).toEqual({id: 1, title: "Cookies"});
+    });
+
+    it('should edit a recipe', function() {
+      expect($scope.recipe).toEqual({id: 1, title: "Cookies"});
+      location.path('/test');
+      expect(location.path()).toEqual('/test');
+      $scope.edit();
+      expect(location.path()).toEqual('/edit/1');
+    });
+  });
 });
