@@ -21,7 +21,7 @@ module.exports = function(config) {
       'assets/angular-mocks.js',
       'ng/**/module.js',
       'ng/**/*.js',
-      'test/ng/**/*spec.js'
+      'test/ng/**/*.spec.js'
     ],
 
 
@@ -34,13 +34,22 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'ng/**/*.js': ['coverage']
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
+
+    coverageReporter: {
+      'dir': 'coverage',
+      reporters: [
+        { type: 'html' },
+        { type: 'text' }
+      ]
+    },
 
 
     // web server port

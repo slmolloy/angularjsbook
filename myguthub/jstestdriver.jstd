@@ -1,0 +1,10 @@
+server: http://localhost:9876
+
+load:
+  - ng/*/*.js
+
+test:
+  - test/ng/*/*.js
+
+plugin:
+  - name: "coverage"
