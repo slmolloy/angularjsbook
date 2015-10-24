@@ -143,4 +143,19 @@ describe('Controllers', function() {
       expect($scope.recipe.id).toEqual(1);
     });
   });
+
+  describe('IngredientsCtrl', function() {
+    beforeEach(inject(function($rootScope, $controller, Recipe) {
+      $scope = $rootScope.$new();
+      ctrl = $controller('IngredientsCtrl', {
+        $scope: $scope,
+        recipe: new Recipe({id: 1, title: 'Cookies', ingredients: [ {} ]})
+      });
+    }));
+
+    it('should add new ingredient', function() {
+      //expect($scope.recipe.ingredients.length).toEqual(0);
+
+    });
+  })
 });
