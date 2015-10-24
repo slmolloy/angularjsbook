@@ -112,4 +112,35 @@ describe('Controllers', function() {
       expect(location.path()).toEqual('/');
     });
   });
+
+  describe('NewCtrl', function() {
+    var mockBackend, location;
+
+    beforeEach(inject(function($rootScope, $controller, _$httpBackend_, $location, Recipe) {
+      mockBackend = _$httpBackend_;
+      location = $location;
+      $scope = $rootScope.$new();
+      ctrl = $controller('NewCtrl', {
+        $scope: $scope,
+        $location: $location,
+        recipe: new Recipe({ingredients: [ {} ]})
+      });
+
+      location.path('test');
+
+      mockBackend.when('POST', '/recipes')
+        .respond(function(params) {
+          return [200, {id: 1, title: params.title}]
+        });
+    }));
+
+    it('should create new recipe', function() {
+      mockBackend.expectPOST('/recipes', {ingredients: [{}]});
+      $scope.save();
+      expect(location.path()).toEqual('/test');
+      mockBackend.flush();
+      expect(location.path()).toEqual('/view/1');
+      expect($scope.recipe.id).toEqual(1);
+    });
+  });
 });
