@@ -15,12 +15,9 @@ describe('Controllers', function() {
   });
 
   describe('ListCtrl', function() {
-    var mockBackend;
-
-    beforeEach(inject(function($rootScope, $controller, _$httpBackend_) {
-      mockBackend = _$httpBackend_;
-      $scope = $rootScope.$new();
-      ctrl = $controller('ListCtrl', {
+    beforeEach(inject(function(_$rootScope_, _$controller_) {
+      $scope = _$rootScope_.$new();
+      $controller = _$controller_('ListCtrl', {
         $scope: $scope,
         recipes: [1, 2, 3]
       });
@@ -32,13 +29,10 @@ describe('Controllers', function() {
   });
 
   describe('ViewCtrl', function() {
-    var mockBackend, location;
-
-    beforeEach(inject(function($rootScope, $controller, _$httpBackend_, $location) {
-      mockBackend = _$httpBackend_;
-      location = $location;
-      $scope = $rootScope.$new();
-      ctrl = $controller('ViewCtrl', {
+    beforeEach(inject(function(_$rootScope_, _$controller_, _$location_) {
+      $location = _$location_;
+      $scope = _$rootScope_.$new();
+      $controller = _$controller_('ViewCtrl', {
         $scope: $scope,
         $location: $location,
         recipe: {id: 1, title: 'Cookies'}
@@ -51,57 +45,54 @@ describe('Controllers', function() {
 
     it('should edit a recipe', function() {
       expect($scope.recipe).toEqual({id: 1, title: 'Cookies'});
-      location.path('/test');
-      expect(location.path()).toEqual('/test');
+      $location.path('/test');
+      expect($location.path()).toEqual('/test');
       $scope.edit();
-      expect(location.path()).toEqual('/edit/1');
+      expect($location.path()).toEqual('/edit/1');
     });
   });
 
   describe('EditCtrl', function() {
-    var mockBackend, location;
-
-    beforeEach(inject(function($rootScope, $controller, _$httpBackend_, $location, Recipe) {
-      mockBackend = _$httpBackend_;
-      location = $location;
-      $scope = $rootScope.$new();
-      ctrl = $controller('EditCtrl', {
+    beforeEach(inject(function(_$rootScope_, _$controller_, _$httpBackend_, _$location_, Recipe) {
+      $httpBackend = _$httpBackend_;
+      $location = _$location_;
+      $scope = _$rootScope_.$new();
+      $controller = _$controller_('EditCtrl', {
         $scope: $scope,
         $location: $location,
         recipe: new Recipe({id: 1, title: 'Cookies'})
       });
 
-      location.path('test');
+      $location.path('test');
 
       var recipesRe = /.*\/recipes\/(\w+)$/
-      mockBackend.when('POST', recipesRe)
+      $httpBackend.when('POST', recipesRe)
           .respond(function(method, url, params) {
-          /*{id:2, title: 'Cookies'}*/
-          var recipeId = parseInt(url.replace(recipesRe, '$1'), 10);
-          if (recipeId === 1) {
-            return [200, {id: recipeId + 1, title: 'Cookies'}];
-          } else if (recipeId === 3) {
-            return [200, {id: recipeId + 1, title: 'Fries'}];
-          } else {
-            return [404];
-          }
-        });
+        var recipeId = parseInt(url.replace(recipesRe, '$1'), 10);
+        if (recipeId === 1) {
+          return [200, {id: recipeId + 1, title: 'Cookies'}];
+        } else if (recipeId === 3) {
+          return [200, {id: recipeId + 1, title: 'Fries'}];
+        } else {
+          return [404];
+        }
+      });
     }));
 
     it('should save the recipe', function() {
-      mockBackend.expectPOST('/recipes/1', {id: 1, title: 'Cookies'});
+      $httpBackend.expectPOST('/recipes/1', {id: 1, title: 'Cookies'});
       $scope.save();
-      expect(location.path()).toEqual('/test');
-      mockBackend.flush();
-      expect(location.path()).toEqual('/view/2');
+      expect($location.path()).toEqual('/test');
+      $httpBackend.flush();
+      expect($location.path()).toEqual('/view/2');
 
-      mockBackend.expectPOST('/recipes/3', {id: 3, title: 'Fries'});
-      location.path('/view/3');
+      $httpBackend.expectPOST('/recipes/3', {id: 3, title: 'Fries'});
+      $location.path('/view/3');
       $scope.recipe.id = 3;
       $scope.recipe.title = 'Fries';
       $scope.save();
-      mockBackend.flush();
-      expect(location.path()).toEqual('/view/4');
+      $httpBackend.flush();
+      expect($location.path()).toEqual('/view/4');
     });
 
     it('should remove the recipe', function() {
@@ -109,45 +100,43 @@ describe('Controllers', function() {
 
       $scope.remove();
       expect($scope.recipe).toBeUndefined();
-      expect(location.path()).toEqual('/');
+      expect($location.path()).toEqual('/');
     });
   });
 
   describe('NewCtrl', function() {
-    var mockBackend, location;
-
-    beforeEach(inject(function($rootScope, $controller, _$httpBackend_, $location, Recipe) {
-      mockBackend = _$httpBackend_;
-      location = $location;
-      $scope = $rootScope.$new();
-      ctrl = $controller('NewCtrl', {
+    beforeEach(inject(function(_$rootScope_, _$controller_, _$httpBackend_, _$location_, Recipe) {
+      $httpBackend = _$httpBackend_;
+      $location = _$location_;
+      $scope = _$rootScope_.$new();
+      $controller = _$controller_('NewCtrl', {
         $scope: $scope,
         $location: $location,
         recipe: new Recipe({ingredients: [ {} ]})
       });
 
-      location.path('test');
+      $location.path('test');
 
-      mockBackend.when('POST', '/recipes')
+      $httpBackend.when('POST', '/recipes')
         .respond(function(params) {
           return [200, {id: 1, title: params.title}]
         });
     }));
 
     it('should create new recipe', function() {
-      mockBackend.expectPOST('/recipes', {ingredients: [{}]});
+      $httpBackend.expectPOST('/recipes', {ingredients: [{}]});
       $scope.save();
-      expect(location.path()).toEqual('/test');
-      mockBackend.flush();
-      expect(location.path()).toEqual('/view/1');
+      expect($location.path()).toEqual('/test');
+      $httpBackend.flush();
+      expect($location.path()).toEqual('/view/1');
       expect($scope.recipe.id).toEqual(1);
     });
   });
 
   describe('IngredientsCtrl', function() {
-    beforeEach(inject(function($rootScope, $controller, Recipe) {
-      $scope = $rootScope.$new();
-      ctrl = $controller('IngredientsCtrl', {
+    beforeEach(inject(function(_$rootScope_, _$controller_, Recipe) {
+      $scope = _$rootScope_.$new();
+      $controller = _$controller_('IngredientsCtrl', {
         $scope: $scope
       });
 

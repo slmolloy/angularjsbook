@@ -14,16 +14,16 @@ describe('Services', function() {
   });
 
   describe('MultiRecipeLoader', function() {
-    var mockBackend, loader;
+    var loader;
 
     beforeEach(inject(function(_$httpBackend_, MultiRecipeLoader) {
-      mockBackend = _$httpBackend_;
+      $httpBackend = _$httpBackend_;
       loader = MultiRecipeLoader;
     }));
 
     it('should load a list of recipes', function() {
-      mockBackend.when('GET', '/recipes').respond([{id: 1}, {id: 2}]);
-      mockBackend.expectGET('/recipes');
+      $httpBackend.when('GET', '/recipes').respond([{id: 1}, {id: 2}]);
+      $httpBackend.expectGET('/recipes');
 
       var recipes;
       var promise = loader();
@@ -32,13 +32,13 @@ describe('Services', function() {
       });
 
       expect(recipes).toBeUndefined();
-      mockBackend.flush();
+      $httpBackend.flush();
       expect(recipes).toEqualData([{id: 1}, {id: 2}]);
     });
 
     it('should fail to load list of recipes', function() {
-      mockBackend.when('GET', '/recipes').respond(500);
-      mockBackend.expectGET('/recipes');
+      $httpBackend.when('GET', '/recipes').respond(500);
+      $httpBackend.expectGET('/recipes');
 
       var recipes, errMsg;
       var promise = loader();
@@ -49,7 +49,7 @@ describe('Services', function() {
       });
 
       expect(recipes).toBeUndefined();
-      mockBackend.flush();
+      $httpBackend.flush();
       expect(recipes).toBeUndefined();
       expect(errMsg).toBeDefined();
       expect(errMsg).toEqual('Unable to fetch recipes');
@@ -57,21 +57,21 @@ describe('Services', function() {
   });
 
   describe('RecipeLoader', function() {
-    var mockBackend, location, loader;
+    var loader;
 
     beforeEach(inject(function(_$httpBackend_, _$location_, RecipeLoader) {
-      mockBackend = _$httpBackend_;
-      location = _$location_;
+      $httpBackend = _$httpBackend_;
+      $location = _$location_;
       loader = RecipeLoader;
     }));
 
     it('should load single recipe', function() {
-      location.path('/view/1');
-      expect(location.path()).toBe('/view/1');
+      $location.path('/view/1');
+      expect($location.path()).toBe('/view/1');
 
-      mockBackend.when('GET', '/recipes/1').respond({id: 1, title: 'Cookies'});
-      mockBackend.expectGET('/recipes/1');
-      mockBackend.expectGET('viewRecipe.html').respond('viewRecipe');
+      $httpBackend.when('GET', '/recipes/1').respond({id: 1, title: 'Cookies'});
+      $httpBackend.expectGET('/recipes/1');
+      $httpBackend.expectGET('viewRecipe.html').respond('viewRecipe');
 
       var recipe;
       var promise = loader(1);
@@ -80,17 +80,17 @@ describe('Services', function() {
       });
 
       expect(recipe).toBeUndefined();
-      mockBackend.flush();
+      $httpBackend.flush();
       expect(recipe).toEqualData({id: 1, title: 'Cookies'});
     });
 
     it('should fail to load recipe', function() {
-      location.path('/view/1');
-      expect(location.path()).toBe('/view/1');
+      $location.path('/view/1');
+      expect($location.path()).toBe('/view/1');
 
-      mockBackend.when('GET', '/recipes/1').respond(500);
-      mockBackend.expectGET('/recipes/1');
-      mockBackend.expectGET('viewRecipe.html').respond('viewRecipe');
+      $httpBackend.when('GET', '/recipes/1').respond(500);
+      $httpBackend.expectGET('/recipes/1');
+      $httpBackend.expectGET('viewRecipe.html').respond('viewRecipe');
 
       var recipe, errMsg;
       var promise = loader(1);
@@ -102,18 +102,18 @@ describe('Services', function() {
 
       expect(recipe).toBeUndefined();
       expect(errMsg).toBeUndefined();
-      mockBackend.flush();
+      $httpBackend.flush();
       expect(recipe).toBeUndefined();
       expect(errMsg).toEqual('Failed to load recipe');
     });
 
     it('should load single recipe to edit', function() {
-      location.path('/edit/1');
-      expect(location.path()).toBe('/edit/1');
+      $location.path('/edit/1');
+      expect($location.path()).toBe('/edit/1');
 
-      mockBackend.when('GET', '/recipes/1').respond({id: 1, title: 'Cookies'});
-      mockBackend.expectGET('/recipes/1');
-      mockBackend.expectGET('formRecipe.html').respond('formRecipe');
+      $httpBackend.when('GET', '/recipes/1').respond({id: 1, title: 'Cookies'});
+      $httpBackend.expectGET('/recipes/1');
+      $httpBackend.expectGET('formRecipe.html').respond('formRecipe');
 
       var recipe;
       var promise = loader(1);
@@ -122,9 +122,8 @@ describe('Services', function() {
       });
 
       expect(recipe).toBeUndefined();
-      mockBackend.flush();
+      $httpBackend.flush();
       expect(recipe).toEqualData({id: 1, title: 'Cookies'});
     });
   });
-
 });
