@@ -17,12 +17,12 @@ services.factory('MultiRecipeLoader', function(Recipe, $q) {
 });
 
 services.factory('RecipeLoader', function(Recipe, $route, $q) {
-  return function() {
+  return function(recipeId) {
     var delay = $q.defer();
-    Recipe.get({id: $route.current.params.recipeId}, function(recipe) {
+    Recipe.get({id: recipeId}, function(recipe) {
       delay.resolve(recipe);
     }, function() {
-      delay.reject('Unable to fetch recipe' + $route.current.params.recipeId);
+      delay.reject('Unable to fetch recipe' + recipeId);
     });
     return delay.promise;
   };

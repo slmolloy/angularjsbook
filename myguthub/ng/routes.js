@@ -13,16 +13,16 @@ angular.module('myguthub')
   .when('/edit/:recipeId', {
       controller: 'EditCtrl',
       resolve: {
-        recipe: function(RecipeLoader) {
-          return RecipeLoader();
+        recipe: function(RecipeLoader, $route) {
+          return RecipeLoader($route.current.params.recipeId);
         }
       },
       templateUrl: 'formRecipe.html' })
   .when('/view/:recipeId', {
       controller: 'ViewCtrl',
       resolve: {
-        recipe: function(RecipeLoader) {
-          return RecipeLoader();
+        recipe: function(RecipeLoader, $route) {
+          return RecipeLoader($route.current.params.recipeId);
         }
       },
       templateUrl: 'viewRecipe.html' })

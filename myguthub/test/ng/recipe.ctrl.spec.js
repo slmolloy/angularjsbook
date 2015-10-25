@@ -148,14 +148,28 @@ describe('Controllers', function() {
     beforeEach(inject(function($rootScope, $controller, Recipe) {
       $scope = $rootScope.$new();
       ctrl = $controller('IngredientsCtrl', {
-        $scope: $scope,
-        recipe: new Recipe({id: 1, title: 'Cookies', ingredients: [ {} ]})
+        $scope: $scope
       });
+
+      $scope.recipe = new Recipe({id: 1, title: 'Cookies', ingredients: []})
     }));
 
     it('should add new ingredient', function() {
-      //expect($scope.recipe.ingredients.length).toEqual(0);
+      expect($scope.recipe).toBeDefined();
+      expect($scope.recipe.ingredients).toBeDefined();
+      $scope.addIngredient();
+      expect($scope.recipe.ingredients.length).toEqual(1);
+      $scope.addIngredient();
+      expect($scope.recipe.ingredients.length).toEqual(2);
+    });
 
+    it('should remove ingredient', function() {
+      expect($scope.recipe).toBeDefined();
+      expect($scope.recipe.ingredients).toBeDefined();
+      $scope.addIngredient();
+      expect($scope.recipe.ingredients.length).toEqual(1);
+      $scope.removeIngredient();
+      expect($scope.recipe.ingredients.length).toEqual(0);
     });
   })
 });
