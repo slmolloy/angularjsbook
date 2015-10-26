@@ -29,19 +29,6 @@ describe('Directives', function() {
 
   describe('focus', function() {
     var element, scope, timeout;
-    beforeEach(function() {
-      jasmine.addMatchers({
-        toHaveFocus: function() {
-          return {
-            compare: function(actual) {
-              return {
-                pass: document.activeElement === actual[0]
-              };
-            }
-          };
-        }
-      });
-    });
 
     beforeEach(inject(function(_$rootScope_, _$compile_, _$timeout_) {
       $rootScope = _$rootScope_;
