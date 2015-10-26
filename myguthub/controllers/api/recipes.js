@@ -1,4 +1,5 @@
 var router = require('express').Router();
+var sleep = require('sleep');
 
 var recipes = [
   {
@@ -46,10 +47,14 @@ var recipes = [
 ];
 
 router.get('/', function(req, res, next) {
+  // Simulate server call time
+  sleep.usleep(500000);
   res.json(recipes);
 });
 
 router.get('/:id', function(req, res, next) {
+  // Simulate server call time
+  sleep.usleep(500000);
   res.json(recipes[req.params.id - 1]);
 });
 
