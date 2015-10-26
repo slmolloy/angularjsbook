@@ -16,10 +16,12 @@ directives.directive('butterbar', function($rootScope) {
   };
 });
 
-directives.directive('focus', function() {
+directives.directive('focus', function($timeout) {
   return {
-    link: function(scope, element, attrs) {
-      element[0].focus();
+    link: function(scope, element) {
+      $timeout(function() {
+        element[0].focus();
+      });
     }
   };
 });
